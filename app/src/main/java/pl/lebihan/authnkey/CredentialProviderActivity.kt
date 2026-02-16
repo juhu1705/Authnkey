@@ -328,7 +328,7 @@ class CredentialProviderActivity : AppCompatActivity() {
             registerReceiver(usbAttachReceiver, usbAttachFilter)
         }
 
-        if (currentTransport == null) {
+        if (currentTransport?.isConnected != true || currentTransport is UsbTransport) {
             checkForUsbDevice()
         }
     }
@@ -374,6 +374,19 @@ class CredentialProviderActivity : AppCompatActivity() {
     }
 
     private fun checkForUsbDevice() {
+        // Verify the existing USB connection is still usable
+        val transport = currentTransport
+        if (transport is UsbTransport) {
+            try {
+                transport.reclaimConnection()
+                return // still good
+            } catch (e: AuthnkeyError.NotConnected) {
+                transport.close()
+                currentTransport = null
+                pinProtocol = null
+            }
+        }
+
         val devices = usbManager.deviceList.values.filter { UsbTransport.isFidoDevice(it) }
         if (devices.isNotEmpty()) {
             val device = devices.first()

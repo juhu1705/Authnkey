@@ -208,7 +208,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Auto-connect to already-plugged USB FIDO devices
-        checkForUsbDevice()
+        if (currentTransport?.isConnected != true || currentTransport is UsbTransport) {
+            checkForUsbDevice()
+        }
 
         // Check if started by USB device attachment
         if (intent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED) {
@@ -318,9 +320,19 @@ class MainActivity : AppCompatActivity() {
      * Only connects if there's exactly one device and we're not already connected.
      */
     private fun checkForUsbDevice() {
-        // Skip if already connected
-        if (currentTransport?.isConnected == true) {
-            return
+        // Verify the existing USB connection is still usable
+        val transport = currentTransport
+        if (transport is UsbTransport) {
+            try {
+                transport.reclaimConnection()
+                return // still good
+            } catch (e: AuthnkeyError.NotConnected) {
+                transport.close()
+                currentTransport = null
+                pinProtocol = null
+                credentialManagement = null
+                updateConnectionStatus()
+            }
         }
 
         val devices = usbManager.deviceList.values
