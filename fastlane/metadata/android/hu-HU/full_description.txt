@@ -1,4 +1,4 @@
-Az Authnkey egy hitelesítési szolgáltatás, mellyel lehetővé válik a FIDO2 szabványra épülő biztonsági kulcsok (például YubiKey vagy SoloKey) használata jelszó nélküli (passkey) azonosításhoz Androidon.
+Az Authnkey egy hitelesítési szolgáltatás, mellyel lehetővé válik a FIDO2 szabványra épülő biztonsági kulcsok (például YubiKey, SoloKey, Nitrokey, vagy Token2) használata jelszó nélküli (passkey) azonosításhoz Androidon.
 
 Az Android beépített WebAuthn támogatása egy jelentős hiányossággal küzd: Nem támogatja a CTAP2 protokollt NFC-n keresztül. Ez azt jelenti, hogy nem használhatók a PIN-kóddal védett passkey-ek vagy a felfedezhető hitelesítő adatok NFC-s biztonsági kulcsokkal — a rendszer ilyenkor csak az alapvető U2F „érintéses” azonosításra korlátozódik. Az Authnkey ezt a rést hivatott kitölteni a teljes CTAP2 protokoll implementálásával.
 
